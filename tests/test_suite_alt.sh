@@ -15,6 +15,13 @@ echo "Starting tests...good luck:" \
 && py.test -v test_netmiko_tcl.py --test_device cisco881 \
 && py.test -v test_netmiko_show.py --test_device cisco881 \
 && py.test -v test_netmiko_config.py --test_device cisco881 \
+&& py.test -v test_netmiko_sesssion_log.py --test_device cisco881_slog \
+\
+&& echo "Cisco IOS SSH fast_cli (including SCP)" \
+&& py.test -v test_netmiko_scp.py --test_device cisco881_fast \
+&& py.test -v test_netmiko_tcl.py --test_device cisco881_fast \
+&& py.test -v test_netmiko_show.py --test_device cisco881_fast \
+&& py.test -v test_netmiko_config.py --test_device cisco881_fast \
 \
 && echo "Cisco IOS using SSH config with SSH Proxy" \
 && py.test -v test_netmiko_show.py --test_device cisco881_ssh_config \
@@ -29,17 +36,13 @@ echo "Starting tests...good luck:" \
 && py.test -v test_netmiko_config.py --test_device cisco_s300 \
 \
 && echo "Arista" \
-&& py.test -v test_netmiko_scp.py --test_device arista_sw4 \
-&& py.test -v test_netmiko_show.py --test_device arista_sw4 \
-&& py.test -v test_netmiko_config.py --test_device arista_sw4 \
+&& py.test -v test_netmiko_scp.py --test_device arista_sw \
+&& py.test -v test_netmiko_show.py --test_device arista_sw \
+&& py.test -v test_netmiko_config.py --test_device arista_sw \
 \
 && echo "HP ProCurve" \
 && py.test -v test_netmiko_show.py --test_device hp_procurve \
 && py.test -v test_netmiko_config.py --test_device hp_procurve \
-\
-&& echo "HP Comware7" \
-&& py.test -v test_netmiko_show.py --test_device hp_comware \
-&& py.test -v test_netmiko_config.py --test_device hp_comware \
 \
 && echo "Juniper" \
 && py.test -v test_netmiko_scp.py --test_device juniper_srx \
@@ -70,7 +73,7 @@ echo "Starting tests...good luck:" \
 \
 && echo "Autodetect tests" \
 && py.test -s -v test_netmiko_autodetect.py --test_device cisco881 \
-&& py.test -s -v test_netmiko_autodetect.py --test_device arista_sw4 \
+&& py.test -s -v test_netmiko_autodetect.py --test_device arista_sw \
 && py.test -s -v test_netmiko_autodetect.py --test_device juniper_srx \
 && py.test -s -v test_netmiko_autodetect.py --test_device cisco_asa \
 && py.test -s -v test_netmiko_autodetect.py --test_device cisco_xrv \
@@ -78,3 +81,8 @@ echo "Starting tests...good luck:" \
 || RETURN_CODE=1
 
 exit $RETURN_CODE
+
+# && echo "HP Comware7" \
+# && py.test -v test_netmiko_show.py --test_device hp_comware \
+# && py.test -v test_netmiko_config.py --test_device hp_comware \
+# \

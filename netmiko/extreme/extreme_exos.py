@@ -5,18 +5,19 @@ import re
 from netmiko.cisco_base_connection import CiscoSSHConnection
 
 
-class ExtremeBase(CiscoSSHConnection):
-    """Extreme support.
+class ExtremeExosBase(CiscoSSHConnection):
+    """Extreme Exos support.
 
     Designed for EXOS >= 15.0
     """
+
     def session_preparation(self):
         self._test_channel_read()
         self.set_base_prompt()
         self.disable_paging(command="disable clipaging")
         self.send_command_timing("disable cli prompting")
         # Clear the read buffer
-        time.sleep(.3 * self.global_delay_factor)
+        time.sleep(0.3 * self.global_delay_factor)
         self.clear_buffer()
 
     def set_base_prompt(self, *args, **kwargs):
@@ -34,9 +35,9 @@ class ExtremeBase(CiscoSSHConnection):
             * testhost.4 #
             * testhost.5 #
         """
-        cur_base_prompt = super(ExtremeBase, self).set_base_prompt(*args, **kwargs)
+        cur_base_prompt = super(ExtremeExosBase, self).set_base_prompt(*args, **kwargs)
         # Strip off any leading * or whitespace chars; strip off trailing period and digits
-        match = re.search(r'[\*\s]*(.*)\.\d+', cur_base_prompt)
+        match = re.search(r"[\*\s]*(.*)\.\d+", cur_base_prompt)
         if match:
             self.base_prompt = match.group(1)
             return self.base_prompt
@@ -47,35 +48,35 @@ class ExtremeBase(CiscoSSHConnection):
         """Extreme needs special handler here due to the prompt changes."""
 
         # Change send_command behavior to use self.base_prompt
-        kwargs.setdefault('auto_find_prompt', False)
+        kwargs.setdefault("auto_find_prompt", False)
 
         # refresh self.base_prompt
         self.set_base_prompt()
-        return super(ExtremeBase, self).send_command(*args, **kwargs)
+        return super(ExtremeExosBase, self).send_command(*args, **kwargs)
 
-    def config_mode(self, config_command=''):
-        """No configuration mode on Extreme."""
-        return ''
+    def config_mode(self, config_command=""):
+        """No configuration mode on Extreme Exos."""
+        return ""
 
-    def check_config_mode(self, check_string='#'):
+    def check_config_mode(self, check_string="#"):
         """Checks whether in configuration mode. Returns a boolean."""
-        return super(ExtremeBase, self).check_config_mode(check_string=check_string)
+        return super(ExtremeExosBase, self).check_config_mode(check_string=check_string)
 
-    def exit_config_mode(self, exit_config=''):
-        """No configuration mode on Extreme."""
-        return ''
+    def exit_config_mode(self, exit_config=""):
+        """No configuration mode on Extreme Exos."""
+        return ""
 
-    def save_config(self, cmd='save configuration primary', confirm=False):
+    def save_config(self, cmd="save configuration primary", confirm=False):
         """Saves configuration."""
-        return super(ExtremeBase, self).save_config(cmd=cmd, confirm=confirm)
+        return super(ExtremeExosBase, self).save_config(cmd=cmd, confirm=confirm)
 
 
-class ExtremeSSH(ExtremeBase):
+class ExtremeExosSSH(ExtremeExosBase):
     pass
 
 
-class ExtremeTelnet(ExtremeBase):
+class ExtremeExosTelnet(ExtremeExosBase):
     def __init__(self, *args, **kwargs):
-        default_enter = kwargs.get('default_enter')
-        kwargs['default_enter'] = '\r\n' if default_enter is None else default_enter
-        super(ExtremeTelnet, self).__init__(*args, **kwargs)
+        default_enter = kwargs.get("default_enter")
+        kwargs["default_enter"] = "\r\n" if default_enter is None else default_enter
+        super(ExtremeExosTelnet, self).__init__(*args, **kwargs)
